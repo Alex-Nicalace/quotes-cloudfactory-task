@@ -4,6 +4,12 @@ import { Button, Text, View } from 'react-native';
 import { RootStackParamList } from '../navigation/types';
 import { useApi } from '../hooks/useApi';
 import { getTickers } from '../services/apiTickers';
+import {
+  Table,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from '../components/UI/Table';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Quotes'>;
 
@@ -58,7 +64,29 @@ export default function QuotesScreen({ navigation }: Props) {
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text style={{ fontSize: 22, marginBottom: 20 }}>Котировки</Text>
       {errorMessage && <Text style={{ color: 'red' }}>{errorMessage}</Text>}
-      <Text>Получено записей: {quotes?.length}</Text>
+      {quotes && (
+        <Table style={{ width: '100%' }}>
+          <TableHeader>
+            <TableRow>
+              <TableCell>symbol</TableCell>
+              <TableCell>price</TableCell>
+              <TableCell>bestBidPrice</TableCell>
+              <TableCell>bestAskPrice</TableCell>
+              <TableCell>bestAskSize</TableCell>
+            </TableRow>
+          </TableHeader>
+
+          {quotes.map(q => (
+            <TableRow key={q.symbol}>
+              <TableCell>{q.symbol}</TableCell>
+              <TableCell>{q.price}</TableCell>
+              <TableCell>{q.bestBidPrice}</TableCell>
+              <TableCell>{q.bestAskPrice}</TableCell>
+              <TableCell>{q.bestAskSize}</TableCell>
+            </TableRow>
+          ))}
+        </Table>
+      )}
       <Button
         title="Назад к информации"
         onPress={() => navigation.navigate('About')}
