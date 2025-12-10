@@ -1,8 +1,9 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Text, View } from 'react-native';
 import { RootStackParamList } from '../navigation/types';
-import { useFetch } from '../hooks/useFetch';
+import { useApi } from '../hooks/useApi';
+import { getTickers } from '../services/apiTickers';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Quotes'>;
 
@@ -26,12 +27,28 @@ export interface Ticker {
 }
 
 export default function QuotesScreen({ navigation }: Props) {
-  const { responseData, isLoading, errorMessage } = useFetch<TickerResponse>(
-    'https://futures-api.poloniex.com/api/v2/tickers',
-  );
-  const quotes = responseData?.data;
+  const [apiState, fetchData] = useApi(getTickers);
+  const { data: quotes, isLoading, errorMessage } = apiState;
 
-  if (isLoading)
+  useEffect(
+    function load() {
+      const controller = new AbortController();
+      fetchData()({ signal: controller.signal });
+
+      const id = setInterval(
+        () => fetchData()({ signal: controller.signal }),
+        5000,
+      );
+
+      return () => {
+        controller.abort();
+        clearInterval(id);
+      };
+    },
+    [fetchData],
+  );
+
+  if (isLoading && !quotes)
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Text>Loading...</Text>
