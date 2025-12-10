@@ -12,8 +12,14 @@ import {
 } from '../components/UI/Table';
 
 export const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  error: { color: 'red' },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingInline: 20,
+  },
+  rowError: { justifyContent: 'center', alignItems: 'center' },
+  cellError: { color: 'red', textAlign: 'center' },
 });
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Quotes'>;
@@ -67,7 +73,6 @@ export default function QuotesScreen({ navigation }: Props) {
     );
   return (
     <View style={styles.container}>
-      {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
       {quotes && (
         <Table>
           <TableHeader>
@@ -80,6 +85,11 @@ export default function QuotesScreen({ navigation }: Props) {
             </TableRow>
           </TableHeader>
 
+          {errorMessage && (
+            <TableRow style={styles.rowError}>
+              <TableCell style={styles.cellError}>{errorMessage}</TableCell>
+            </TableRow>
+          )}
           {quotes.map(q => (
             <TableRow key={q.symbol}>
               <TableCell>{q.symbol}</TableCell>
