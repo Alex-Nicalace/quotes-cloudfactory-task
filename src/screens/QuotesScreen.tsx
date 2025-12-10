@@ -71,36 +71,40 @@ export default function QuotesScreen({ navigation }: Props) {
         <Text>Loading...</Text>
       </View>
     );
+
+  if (errorMessage) {
+    console.error(errorMessage);
+  }
+
   return (
     <View style={styles.container}>
-      {quotes && (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableCell>symbol</TableCell>
-              <TableCell>price</TableCell>
-              <TableCell>bestBidPrice</TableCell>
-              <TableCell>bestAskPrice</TableCell>
-              <TableCell>bestAskSize</TableCell>
-            </TableRow>
-          </TableHeader>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableCell>symbol</TableCell>
+            <TableCell>price</TableCell>
+            <TableCell>bestBidPrice</TableCell>
+            <TableCell>bestAskPrice</TableCell>
+            <TableCell>bestAskSize</TableCell>
+          </TableRow>
+        </TableHeader>
 
-          {errorMessage && (
-            <TableRow style={styles.rowError}>
-              <TableCell style={styles.cellError}>{errorMessage}</TableCell>
-            </TableRow>
-          )}
-          {quotes.map(q => (
-            <TableRow key={q.symbol}>
-              <TableCell>{q.symbol}</TableCell>
-              <TableCell>{q.price}</TableCell>
-              <TableCell>{q.bestBidPrice}</TableCell>
-              <TableCell>{q.bestAskPrice}</TableCell>
-              <TableCell>{q.bestAskSize}</TableCell>
-            </TableRow>
-          ))}
-        </Table>
-      )}
+        {errorMessage && (
+          <TableRow style={styles.rowError}>
+            <TableCell style={styles.cellError}>ошибка</TableCell>
+          </TableRow>
+        )}
+        {(quotes || []).map(q => (
+          <TableRow key={q.symbol}>
+            <TableCell>{q.symbol}</TableCell>
+            <TableCell>{q.price}</TableCell>
+            <TableCell>{q.bestBidPrice}</TableCell>
+            <TableCell>{q.bestAskPrice}</TableCell>
+            <TableCell>{q.bestAskSize}</TableCell>
+          </TableRow>
+        ))}
+      </Table>
+
       <Button
         title="Назад к информации"
         onPress={() => navigation.navigate('About')}
