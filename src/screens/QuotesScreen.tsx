@@ -1,47 +1,37 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
-import { RootStackParamList } from '../navigation/types';
-import { useApi } from '../hooks/useApi';
-import { getTickers } from '../services/apiTickers';
+import {
+  ActivityIndicator,
+  Button,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {
   Table,
   TableCell,
   TableHeader,
   TableRow,
 } from '../components/UI/Table';
+import { useApi } from '../hooks/useApi';
+import { RootStackParamList } from '../navigation/types';
+import { getTickers } from '../services/apiTickers';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingInline: 20,
+    padding: 20,
   },
   rowError: { justifyContent: 'center', alignItems: 'center' },
   cellError: { color: 'red', textAlign: 'center' },
+  loading: { fontSize: 20 },
+  tableWrap: { width: '100%', marginBottom: 20 },
 });
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Quotes'>;
-
-export interface TickerResponse {
-  code: string;
-  msg: string;
-  data?: Ticker[] | null;
-}
-export interface Ticker {
-  sequence: number;
-  symbol: string;
-  side: string;
-  size: number;
-  price: string;
-  bestBidSize: number;
-  bestBidPrice: string;
-  bestAskPrice: string;
-  tradeId: string;
-  bestAskSize: number;
-  ts: number;
-}
 
 export default function QuotesScreen({ navigation }: Props) {
   const [apiState, fetchData] = useApi(getTickers);
@@ -68,7 +58,8 @@ export default function QuotesScreen({ navigation }: Props) {
   if (isLoading && !quotes)
     return (
       <View style={styles.container}>
-        <Text>Loading...</Text>
+        <ActivityIndicator size="large" />
+        <Text style={styles.loading}>Loading...</Text>
       </View>
     );
 
@@ -78,32 +69,34 @@ export default function QuotesScreen({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableCell>symbol</TableCell>
-            <TableCell>price</TableCell>
-            <TableCell>bestBidPrice</TableCell>
-            <TableCell>bestAskPrice</TableCell>
-            <TableCell>bestAskSize</TableCell>
-          </TableRow>
-        </TableHeader>
+      <ScrollView style={styles.tableWrap}>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableCell>symbol</TableCell>
+              <TableCell>price</TableCell>
+              <TableCell>bestBidPrice</TableCell>
+              <TableCell>bestAskPrice</TableCell>
+              <TableCell>bestAskSize</TableCell>
+            </TableRow>
+          </TableHeader>
 
-        {errorMessage && (
-          <TableRow style={styles.rowError}>
-            <TableCell style={styles.cellError}>ошибка</TableCell>
-          </TableRow>
-        )}
-        {(quotes || []).map(q => (
-          <TableRow key={q.symbol}>
-            <TableCell>{q.symbol}</TableCell>
-            <TableCell>{q.price}</TableCell>
-            <TableCell>{q.bestBidPrice}</TableCell>
-            <TableCell>{q.bestAskPrice}</TableCell>
-            <TableCell>{q.bestAskSize}</TableCell>
-          </TableRow>
-        ))}
-      </Table>
+          {errorMessage && (
+            <TableRow style={styles.rowError}>
+              <TableCell style={styles.cellError}>ошибка</TableCell>
+            </TableRow>
+          )}
+          {(quotes || []).map(q => (
+            <TableRow key={q.symbol}>
+              <TableCell>{q.symbol}</TableCell>
+              <TableCell>{q.price}</TableCell>
+              <TableCell>{q.bestBidPrice}</TableCell>
+              <TableCell>{q.bestAskPrice}</TableCell>
+              <TableCell>{q.bestAskSize}</TableCell>
+            </TableRow>
+          ))}
+        </Table>
+      </ScrollView>
 
       <Button
         title="Назад к информации"
