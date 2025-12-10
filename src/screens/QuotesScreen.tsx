@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
-import { Button, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import { RootStackParamList } from '../navigation/types';
 import { useApi } from '../hooks/useApi';
 import { getTickers } from '../services/apiTickers';
@@ -10,6 +10,11 @@ import {
   TableHeader,
   TableRow,
 } from '../components/UI/Table';
+
+export const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  error: { color: 'red' },
+});
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Quotes'>;
 
@@ -56,16 +61,15 @@ export default function QuotesScreen({ navigation }: Props) {
 
   if (isLoading && !quotes)
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={styles.container}>
         <Text>Loading...</Text>
       </View>
     );
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 22, marginBottom: 20 }}>Котировки</Text>
-      {errorMessage && <Text style={{ color: 'red' }}>{errorMessage}</Text>}
+    <View style={styles.container}>
+      {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
       {quotes && (
-        <Table style={{ width: '100%' }}>
+        <Table>
           <TableHeader>
             <TableRow>
               <TableCell>symbol</TableCell>
