@@ -5,7 +5,6 @@ import {
   ActivityIndicator,
   Button,
   ScrollView,
-  StyleSheet,
   Text,
   View,
 } from 'react-native';
@@ -14,22 +13,19 @@ import {
   TableCell,
   TableHeader,
   TableRow,
-} from '../components/UI/Table';
-import { RootStackParamList } from '../navigation/types';
-import { quotesStore } from '../stores/QuotesStore';
+} from '../../components/UI/Table';
+import { t } from '../../localization';
+import { RootStackParamList } from '../../navigation/types';
+import { quotesStore } from '../../stores/QuotesStore';
+import { styles } from './styles';
 
-export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  rowError: { justifyContent: 'center', alignItems: 'center' },
-  cellError: { color: 'red', textAlign: 'center' },
-  loading: { fontSize: 20 },
-  tableWrap: { width: '100%', marginBottom: 20 },
-});
+const HEADERS_TABLE = [
+  'TABLE_SYMBOL',
+  'TABLE_PRICE',
+  'TABLE_BEST_BID',
+  'TABLE_BEST_ASK',
+  'TABLE_BEST_ASK_SIZE',
+];
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Quotes'>;
 
@@ -42,11 +38,11 @@ export default observer(function QuotesScreen({ navigation }: Props) {
 
   const { quotes, isLoading, errorMessage } = quotesStore;
 
-  if (isLoading && !quotes)
+  if (isLoading && !quotes.length)
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" />
-        <Text style={styles.loading}>Loading...</Text>
+        <Text style={styles.loading}>{t('LOADING')}</Text>
       </View>
     );
 
@@ -60,17 +56,15 @@ export default observer(function QuotesScreen({ navigation }: Props) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableCell>symbol</TableCell>
-              <TableCell>price</TableCell>
-              <TableCell>bestBidPrice</TableCell>
-              <TableCell>bestAskPrice</TableCell>
-              <TableCell>bestAskSize</TableCell>
+              {HEADERS_TABLE.map(h => (
+                <TableCell key={h}>{t(h)}</TableCell>
+              ))}
             </TableRow>
           </TableHeader>
 
           {errorMessage && (
             <TableRow style={styles.rowError}>
-              <TableCell style={styles.cellError}>ошибка</TableCell>
+              <TableCell style={styles.cellError}>{t('ERROR')}</TableCell>
             </TableRow>
           )}
           {(quotes || []).map(q => (
@@ -86,7 +80,7 @@ export default observer(function QuotesScreen({ navigation }: Props) {
       </ScrollView>
 
       <Button
-        title="Назад к информации"
+        title={t('BACKTO_INFO')}
         onPress={() => navigation.navigate('About')}
       />
     </View>
