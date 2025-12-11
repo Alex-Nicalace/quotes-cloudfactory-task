@@ -1,5 +1,4 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { observer } from 'mobx-react-lite';
 import React, { useEffect } from 'react';
 import {
   ActivityIndicator,
@@ -15,8 +14,9 @@ import {
   TableHeader,
   TableRow,
 } from '../components/UI/Table';
+import { useApi } from '../hooks/useApi';
 import { RootStackParamList } from '../navigation/types';
-import { quotesStore } from '../stores/QuotesStore';
+import { getTickers } from '../services/apiTickers';
 
 export const styles = StyleSheet.create({
   container: {
@@ -33,14 +33,27 @@ export const styles = StyleSheet.create({
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Quotes'>;
 
-export default observer(function QuotesScreen({ navigation }: Props) {
-  useEffect(() => {
-    quotesStore.fetchQuotes();
-    const id = setInterval(quotesStore.fetchQuotes, 5000);
-    return () => clearInterval(id);
-  }, []);
+export default function QuotesScreen({ navigation }: Props) {
+  const [apiState, fetchData] = useApi(getTickers);
+  const { data: quotes, isLoading, errorMessage } = apiState;
 
-  const { quotes, isLoading, errorMessage } = quotesStore;
+  useEffect(
+    function load() {
+      const controller = new AbortController();
+      fetchData()({ signal: controller.signal });
+
+      const id = setInterval(
+        () => fetchData()({ signal: controller.signal }),
+        5000,
+      );
+
+      return () => {
+        controller.abort();
+        clearInterval(id);
+      };
+    },
+    [fetchData],
+  );
 
   if (isLoading && !quotes)
     return (
@@ -91,4 +104,4 @@ export default observer(function QuotesScreen({ navigation }: Props) {
       />
     </View>
   );
-});
+}
