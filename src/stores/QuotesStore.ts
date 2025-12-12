@@ -1,5 +1,6 @@
 import { makeAutoObservable, runInAction } from 'mobx';
-import { getTickers, Ticker } from '../services/apiTickers';
+import { getTickers } from '../services/apiTickers';
+import { Ticker } from '../services/schemas/apiTickers';
 
 class QuotesStore {
   // свойства который в конструкторе делаются наблюдаемыми

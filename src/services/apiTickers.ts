@@ -1,25 +1,25 @@
+import * as z from 'zod';
+import { ApiError } from './ApiError';
 import { apiFetch } from './base';
-
-export interface TickerResponse {
-  code: string;
-  msg: string;
-  data?: Ticker[] | null;
-}
-export interface Ticker {
-  sequence: number;
-  symbol: string;
-  side: string;
-  size: number;
-  price: string;
-  bestBidSize: number;
-  bestBidPrice: string;
-  bestAskPrice: string;
-  tradeId: string;
-  bestAskSize: number;
-  ts: number;
-}
+import { TickerResponseSchema } from './schemas/apiTickers';
 
 export async function getTickers(options?: RequestInit) {
-  const response = await apiFetch<TickerResponse>('/tickers', options);
-  return response.data;
+  const raw = await apiFetch('/tickers', options);
+
+  const result = TickerResponseSchema.safeParse(raw);
+
+  if (!result.success) {
+    console.error(
+      'Ticker response validation error:',
+      z.treeifyError(result.error),
+    );
+
+    throw new ApiError(
+      JSON.stringify(z.treeifyError(result.error)),
+      500,
+      'ValidationError',
+    );
+  }
+
+  return result.data.data;
 }
