@@ -9,8 +9,8 @@ export default {
 
   TABLE_SYMBOL: 'Symbol',
   TABLE_PRICE: 'Price',
-  TABLE_BEST_BID: 'Best Bid',
-  TABLE_BEST_ASK: 'Best Ask',
+  TABLE_BEST_BID_PRICE: 'Best Bid',
+  TABLE_BEST_ASK_PRICE: 'Best Ask',
   TABLE_BEST_ASK_SIZE: 'Best Ask Size',
 
   ERROR: 'Error',

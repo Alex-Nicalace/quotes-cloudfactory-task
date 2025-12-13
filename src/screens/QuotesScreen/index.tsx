@@ -16,14 +16,14 @@ import {
 } from '../../components/UI/Table';
 import { t } from '../../localization';
 import { RootStackParamList } from '../../navigation/types';
-import { quotesStore } from '../../stores/QuotesStore';
+import { quotesStore } from '../../stores/quotesStore';
 import { styles } from './styles';
 
 const HEADERS_TABLE = [
   'TABLE_SYMBOL',
   'TABLE_PRICE',
-  'TABLE_BEST_BID',
-  'TABLE_BEST_ASK',
+  'TABLE_BEST_BID_PRICE',
+  'TABLE_BEST_ASK_PRICE',
   'TABLE_BEST_ASK_SIZE',
 ];
 
@@ -31,9 +31,9 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Quotes'>;
 
 export default observer(function QuotesScreen({ navigation }: Props) {
   useEffect(() => {
-    quotesStore.fetchQuotes();
-    const id = setInterval(quotesStore.fetchQuotes, 5000);
-    return () => clearInterval(id);
+    quotesStore.startLoadingTimer();
+
+    return () => quotesStore.stopLoadingTimer();
   }, []);
 
   const { quotes, isLoading, errorMessage } = quotesStore;
@@ -67,13 +67,21 @@ export default observer(function QuotesScreen({ navigation }: Props) {
               <TableCell style={styles.cellError}>{t('ERROR')}</TableCell>
             </TableRow>
           )}
-          {(quotes || []).map(q => (
+          {quotes.map(q => (
             <TableRow key={q.symbol}>
               <TableCell>{q.symbol}</TableCell>
-              <TableCell>{q.price}</TableCell>
-              <TableCell>{q.bestBidPrice}</TableCell>
-              <TableCell>{q.bestAskPrice}</TableCell>
-              <TableCell>{q.bestAskSize}</TableCell>
+              <TableCell style={styles[q.price.direction]}>
+                {q.price.value}
+              </TableCell>
+              <TableCell style={styles[q.bestBidPrice.direction]}>
+                {q.bestBidPrice.value}
+              </TableCell>
+              <TableCell style={styles[q.bestAskPrice.direction]}>
+                {q.bestAskPrice.value}
+              </TableCell>
+              <TableCell style={styles[q.bestAskSize.direction]}>
+                {q.bestAskSize.value}
+              </TableCell>
             </TableRow>
           ))}
         </Table>

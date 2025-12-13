@@ -11,4 +11,7 @@ export const styles = StyleSheet.create({
   cellError: { color: 'red', textAlign: 'center' },
   loading: { fontSize: 20 },
   tableWrap: { width: '100%', marginBottom: 20 },
+  up: { color: 'green' },
+  down: { color: 'red' },
+  none: { color: 'black' },
 });

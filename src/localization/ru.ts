@@ -9,8 +9,8 @@ export default {
 
   TABLE_SYMBOL: 'Символ',
   TABLE_PRICE: 'Цена',
-  TABLE_BEST_BID: 'Луч. цена покупки',
-  TABLE_BEST_ASK: 'Луч. цена продажи',
+  TABLE_BEST_BID_PRICE: 'Луч. цена покупки',
+  TABLE_BEST_ASK_PRICE: 'Луч. цена продажи',
   TABLE_BEST_ASK_SIZE: 'Луч. заявка (объем)',
 
   ERROR: 'Ошибка',
