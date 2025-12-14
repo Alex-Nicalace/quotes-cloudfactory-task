@@ -16,7 +16,7 @@ export default function QuotesScreen({ navigation }: Props) {
 
       <Button
         title={t('BACKTO_INFO')}
-        onPress={() => navigation.navigate('About')}
+        onPress={() => navigation.popTo('About')}
       />
     </View>
   );
