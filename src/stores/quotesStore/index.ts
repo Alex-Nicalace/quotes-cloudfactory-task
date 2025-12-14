@@ -45,12 +45,14 @@ class QuotesStore {
   };
 
   startLoadingTimer = () => {
+    console.log('start');
     this.fetchQuotes();
     if (this.loadingTimer) clearInterval(this.loadingTimer);
     this.loadingTimer = setInterval(this.fetchQuotes, 5000);
   };
 
   stopLoadingTimer = () => {
+    console.log('stop');
     this.controller?.abort();
     if (this.loadingTimer) clearInterval(this.loadingTimer);
   };

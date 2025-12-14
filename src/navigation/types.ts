@@ -1,4 +1,4 @@
-export type RootStackParamList = {
+export type RootTabParamList = {
   About: undefined;
   Quotes: undefined;
 };

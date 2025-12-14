@@ -7,5 +7,5 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
-  tableWrap: { width: '100%', marginBottom: 20 },
+  tableWrap: { width: '100%' },
 });

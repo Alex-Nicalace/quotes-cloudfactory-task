@@ -1,5 +1,4 @@
 import { observer } from 'mobx-react-lite';
-import { useEffect } from 'react';
 import { ActivityIndicator, Text } from 'react-native';
 import {
   Table,
@@ -22,12 +21,6 @@ const HEADERS_TABLE = [
 
 export default observer(function QuotesTable() {
   const { quotes, isLoading, errorMessage } = quotesStore;
-
-  useEffect(() => {
-    quotesStore.startLoadingTimer();
-
-    return () => quotesStore.stopLoadingTimer();
-  }, []);
 
   if (errorMessage) {
     console.error(errorMessage);

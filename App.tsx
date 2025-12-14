@@ -1,35 +1,34 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { t } from './src/localization';
-import { RootStackParamList } from './src/navigation/types';
+import { RootTabParamList } from './src/navigation/types';
 import AboutScreen from './src/screens/AboutScreen';
 import QuotesScreen from './src/screens/QuotesScreen';
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<RootTabParamList>();
 
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="About">
-        <Stack.Screen
+      <Tab.Navigator
+        initialRouteName="About"
+        screenOptions={{ tabBarIcon: () => null }}
+      >
+        <Tab.Screen
           name="About"
           component={AboutScreen}
-          options={{ title: t('SCREEN_ABOUT') }}
+          options={{ title: t('SCREEN_ABOUT'), tabBarLabel: t('SCREEN_ABOUT') }}
         />
 
-        <Stack.Screen
+        <Tab.Screen
           name="Quotes"
           component={QuotesScreen}
-          options={{ title: t('SCREEN_QUOTES') }}
+          options={{
+            title: t('SCREEN_QUOTES'),
+            tabBarLabel: t('SCREEN_QUOTES'),
+          }}
         />
-      </Stack.Navigator>
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }

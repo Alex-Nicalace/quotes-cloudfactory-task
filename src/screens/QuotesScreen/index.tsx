@@ -1,23 +1,25 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Button, ScrollView, View } from 'react-native';
-import { t } from '../../localization';
-import { RootStackParamList } from '../../navigation/types';
+import { useFocusEffect } from '@react-navigation/native';
+import { ScrollView, View } from 'react-native';
+import { quotesStore } from '../../stores/quotesStore';
 import QuotesTable from './components/QuotesTable';
 import { styles } from './styles';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Quotes'>;
+function focusEffect() {
+  quotesStore.startLoadingTimer();
 
-export default function QuotesScreen({ navigation }: Props) {
+  return () => {
+    quotesStore.stopLoadingTimer();
+  };
+}
+
+export default function QuotesScreen() {
+  useFocusEffect(focusEffect);
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.tableWrap}>
         <QuotesTable />
       </ScrollView>
-
-      <Button
-        title={t('BACKTO_INFO')}
-        onPress={() => navigation.popTo('About')}
-      />
     </View>
   );
 }
