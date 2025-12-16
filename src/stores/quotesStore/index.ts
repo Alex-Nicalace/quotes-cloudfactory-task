@@ -7,11 +7,14 @@ class QuotesStore {
   hashQuotes: HashTickers = {};
   isLoading = false;
   errorMessage = '';
-  loadingTimer: null | ReturnType<typeof setInterval> = null;
+  timeout: null | ReturnType<typeof setInterval> = null;
   controller: AbortController | null = null;
 
   constructor() {
-    makeAutoObservable(this, { loadingTimer: false, controller: false });
+    makeAutoObservable(this, {
+      timeout: false,
+      controller: false,
+    });
   }
 
   get quotes() {
@@ -46,15 +49,26 @@ class QuotesStore {
 
   startLoadingTimer = () => {
     console.log('start');
-    this.fetchQuotes();
-    if (this.loadingTimer) clearInterval(this.loadingTimer);
-    this.loadingTimer = setInterval(this.fetchQuotes, 5000);
+    if (this.timeout) return;
+
+    const tick = async () => {
+      try {
+        await this.fetchQuotes();
+      } finally {
+        this.timeout = setTimeout(tick, 5000);
+      }
+    };
+
+    tick();
   };
 
   stopLoadingTimer = () => {
     console.log('stop');
     this.controller?.abort();
-    if (this.loadingTimer) clearInterval(this.loadingTimer);
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+      this.timeout = null;
+    }
   };
 }
 
